@@ -4,26 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Vellura Towers | Architecture Stacker</title>
-    <meta name="description" content="Stack each limestone floor of Vellura Towers before it slides past the last. A quiet browser game of timing.">
-    <meta name="theme-color" content="#c9c3b8">
+    <meta name="description" content="Stack each obsidian floor of Vellura Towers before it slides past the last. A quiet browser game of timing.">
+    <meta name="theme-color" content="#07090e">
     <link rel="canonical" href="https://www.velluratowers.com/">
     <meta property="og:title" content="Vellura Towers">
-    <meta property="og:description" content="Stack each limestone floor of Vellura Towers before it slides past the last. A quiet browser game of timing.">
+    <meta property="og:description" content="Stack each obsidian floor of Vellura Towers before it slides past the last. A quiet browser game of timing.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.velluratowers.com/">
     <meta property="og:image" content="https://www.velluratowers.com/og.png">
-    <meta property="og:image:alt" content="A small limestone tower of stacked floors on a warm ground.">
+    <meta property="og:image:alt" content="A dark tower of obsidian floors with gold edges under a night sky.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Vellura Towers">
-    <meta name="twitter:description" content="Stack each limestone floor of Vellura Towers before it slides past the last. A quiet browser game of timing.">
+    <meta name="twitter:description" content="Stack each obsidian floor of Vellura Towers before it slides past the last. A quiet browser game of timing.">
     <meta name="twitter:image" content="https://www.velluratowers.com/og.png">
     <style>
         :root {
-            --ink: #2c2924;
-            --muted: #4e483f;
-            --paper: #f3eee6;
-            --line: #ddd4c6;
-            --ground: #c9c3b8;
+            --ink: #f3e6c8;
+            --gold: #e6c36a;
+            --muted: #cbb98a;
+            --glass: rgba(12, 14, 18, 0.94);
+            --line: rgba(214, 176, 96, 0.78);
+            --night: #07090e;
             --serif: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
             --sans: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
         }
@@ -33,7 +34,7 @@
         html, body {
             margin: 0;
             height: 100%;
-            background: var(--ground);
+            background: var(--night);
             color: var(--ink);
             font-family: var(--sans);
             overflow: hidden;
@@ -54,6 +55,7 @@
             font-weight: 600;
             letter-spacing: 0.16em;
             text-transform: uppercase;
+            color: var(--gold);
             pointer-events: none;
         }
 
@@ -72,7 +74,7 @@
             font-size: clamp(44px, 11vw, 68px);
             font-weight: 600;
             line-height: 0.9;
-            opacity: 0.92;
+            color: var(--gold);
         }
 
         #score-label, #best {
@@ -111,7 +113,7 @@
             place-items: center;
             margin: 0;
             padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
-            background: var(--ground);
+            background: var(--night);
             font-size: 16px;
             line-height: 1.45;
         }
@@ -127,10 +129,12 @@
             transform: translate(-50%, -50%);
             width: min(340px, calc(100vw - 32px - env(safe-area-inset-left) - env(safe-area-inset-right)));
             padding: 28px 22px 20px;
-            background: var(--paper);
+            background: var(--glass);
             color: var(--ink);
             border: 1px solid var(--line);
             border-radius: 12px;
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
             text-align: center;
         }
 
@@ -150,6 +154,7 @@
             font-size: clamp(52px, 16vw, 72px);
             font-weight: 600;
             line-height: 0.9;
+            color: var(--gold);
         }
 
         #final-best {
@@ -163,8 +168,8 @@
             border: 0;
             border-radius: 8px;
             padding: 14px 16px;
-            background: #3e463f;
-            color: #f6f1e8;
+            background: var(--gold);
+            color: #1a140c;
             font: 600 15px/1 var(--sans);
             letter-spacing: 0.02em;
             cursor: pointer;
@@ -290,9 +295,10 @@
             }
 
             function stoneColor(level, moving) {
-                const color = new THREE.Color('#e6dac8');
-                color.offsetHSL(0.008, -0.04, -Math.min(0.07, level * 0.0035));
-                if (moving) color.offsetHSL(0, 0, 0.045);
+                const t = Math.min(1, level / 16);
+                const color = new THREE.Color('#3c404a');
+                color.lerp(new THREE.Color('#8d6b4a'), t);
+                if (moving) color.offsetHSL(0.015, 0.06, 0.07);
                 return color;
             }
 
@@ -301,15 +307,37 @@
                 canvas.width = 128;
                 canvas.height = 128;
                 const g = canvas.getContext('2d');
-                g.fillStyle = '#ffffff';
+                g.fillStyle = '#f3f1ec';
                 g.fillRect(0, 0, 128, 128);
-                for (let i = 0; i < 1600; i++) {
-                    const v = 70 + Math.random() * 40;
-                    g.fillStyle = 'rgba(' + v + ',' + (v - 6) + ',' + (v - 16) + ',' + (0.03 + Math.random() * 0.06) + ')';
-                    g.fillRect(Math.random() * 128, Math.random() * 128, 1 + Math.random() * 1.6, 1);
+                for (let i = 0; i < 900; i++) {
+                    const v = 20 + Math.random() * 40;
+                    g.fillStyle = 'rgba(' + v + ',' + v + ',' + (v + 6) + ',' + (0.04 + Math.random() * 0.08) + ')';
+                    g.fillRect(Math.random() * 128, Math.random() * 128, 1 + Math.random() * 1.4, 1);
+                }
+                for (let i = 0; i < 80; i++) {
+                    g.fillStyle = 'rgba(196, 150, 72,' + (0.04 + Math.random() * 0.06) + ')';
+                    g.fillRect(Math.random() * 128, Math.random() * 128, 1, 1);
                 }
                 const tex = new THREE.CanvasTexture(canvas);
                 tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+                return tex;
+            }
+
+            function makeSky() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 4;
+                canvas.height = 512;
+                const g = canvas.getContext('2d');
+                const fade = g.createLinearGradient(0, 0, 0, 512);
+                fade.addColorStop(0, '#05070d');
+                fade.addColorStop(0.46, '#101624');
+                fade.addColorStop(0.7, '#1c1714');
+                fade.addColorStop(1, '#0c0e13');
+                g.fillStyle = fade;
+                g.fillRect(0, 0, 4, 512);
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.magFilter = THREE.LinearFilter;
+                tex.minFilter = THREE.LinearFilter;
                 return tex;
             }
 
@@ -318,10 +346,39 @@
                 canvas.width = 128;
                 canvas.height = 128;
                 const g = canvas.getContext('2d');
-                const fade = g.createRadialGradient(64, 64, 8, 64, 64, 64);
-                fade.addColorStop(0, 'rgba(48, 40, 32, 0.34)');
-                fade.addColorStop(0.5, 'rgba(48, 40, 32, 0.14)');
-                fade.addColorStop(1, 'rgba(48, 40, 32, 0)');
+                const fade = g.createRadialGradient(64, 64, 6, 64, 64, 64);
+                fade.addColorStop(0, 'rgba(0, 0, 0, 0.55)');
+                fade.addColorStop(0.45, 'rgba(0, 0, 0, 0.22)');
+                fade.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                g.fillStyle = fade;
+                g.fillRect(0, 0, 128, 128);
+                return new THREE.CanvasTexture(canvas);
+            }
+
+            function makeGlowTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 128;
+                canvas.height = 128;
+                const g = canvas.getContext('2d');
+                const fade = g.createRadialGradient(64, 64, 2, 64, 64, 64);
+                fade.addColorStop(0, 'rgba(232, 176, 86, 0.55)');
+                fade.addColorStop(0.28, 'rgba(176, 92, 36, 0.22)');
+                fade.addColorStop(1, 'rgba(176, 92, 36, 0)');
+                g.fillStyle = fade;
+                g.fillRect(0, 0, 128, 128);
+                return new THREE.CanvasTexture(canvas);
+            }
+
+            function makeAimTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 128;
+                canvas.height = 128;
+                const g = canvas.getContext('2d');
+                const fade = g.createRadialGradient(64, 64, 18, 64, 64, 60);
+                fade.addColorStop(0, 'rgba(214, 168, 80, 0)');
+                fade.addColorStop(0.55, 'rgba(214, 168, 80, 0.15)');
+                fade.addColorStop(0.78, 'rgba(230, 190, 110, 0.7)');
+                fade.addColorStop(1, 'rgba(214, 168, 80, 0)');
                 g.fillStyle = fade;
                 g.fillRect(0, 0, 128, 128);
                 return new THREE.CanvasTexture(canvas);
@@ -332,7 +389,12 @@
                 const jointH = stepped ? 0.15 : 0.07;
                 const slabH = 1 - jointH;
                 const group = new THREE.Group();
-                const slabMat = new THREE.MeshLambertMaterial({ map: grain, color: stoneColor(level, moving) });
+                const slabMat = new THREE.MeshPhongMaterial({
+                    map: grain,
+                    color: stoneColor(level, moving),
+                    specular: '#d4b072',
+                    shininess: 68
+                });
                 const slabGeo = new THREE.BoxGeometry(w, slabH, d);
                 const slab = new THREE.Mesh(slabGeo, slabMat);
                 slab.position.y = jointH / 2;
@@ -574,7 +636,7 @@
                 const tooThin = info.mw <= MIN_OVERLAP;
                 if (performance.now() >= gate && (moving.seen || tooThin)) moving.armed = true;
                 const closeness = 1 - Math.min(1, Math.abs(info.delta) / Math.max(span, 0.001));
-                aimShadow.material.opacity = 0.05 + closeness * 0.2;
+                aimShadow.material.opacity = 0.22 + closeness * 0.5;
                 positionAimShadow(moving);
                 if (state.score === 0 && state.active) {
                     const next = performance.now() < state.inputOpenAt ? 'Watch the floor' : 'Tap to place the floor';
@@ -796,7 +858,7 @@
 
             function buildBase() {
                 const geo = new THREE.BoxGeometry(5.2, 0.46, 5.2);
-                const mat = new THREE.MeshLambertMaterial({ map: grain, color: '#d3c6b4' });
+                const mat = new THREE.MeshPhongMaterial({ map: grain, color: '#2a241c', specular: '#8a7048', shininess: 28 });
                 const mesh = new THREE.Mesh(geo, mat);
                 mesh.position.y = 0.23;
                 scene.add(mesh);
@@ -882,8 +944,8 @@
                 if (state.best) bestEl.textContent = 'Best ' + state.best;
 
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color('#c9c3b8');
-                scene.fog = new THREE.Fog(0xc9c3b8, 26, 72);
+                scene.background = makeSky();
+                scene.fog = new THREE.Fog(0x12151c, 32, 70);
                 camera = new THREE.OrthographicCamera(-8, 8, 8, -8, 0.1, 400);
                 look = new THREE.Vector3();
                 lookTo = new THREE.Vector3();
@@ -891,7 +953,7 @@
                 sampleA = new THREE.Vector3();
 
                 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
-                renderer.setClearColor(0xc9c3b8, 1);
+                renderer.setClearColor(0x05070d, 1);
                 renderer.domElement.style.position = 'fixed';
                 renderer.domElement.style.inset = '0';
                 renderer.domElement.style.zIndex = '0';
@@ -900,35 +962,58 @@
 
                 grain = makeGrain();
                 grain.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-                jointMat = new THREE.MeshLambertMaterial({ color: '#b5a790' });
+                jointMat = new THREE.MeshPhongMaterial({
+                    color: '#e0b15a',
+                    emissive: '#6b4a18',
+                    specular: '#f4e0b0',
+                    shininess: 52
+                });
 
-                scene.add(new THREE.HemisphereLight(0xf4efe6, 0x8d887e, 0.78));
-                const sun = new THREE.DirectionalLight(0xfff6ea, 0.52);
-                sun.position.set(16, 24, 8);
+                scene.add(new THREE.HemisphereLight(0x9aabcc, 0x1a120c, 0.46));
+                const sun = new THREE.DirectionalLight(0xffe0b0, 0.95);
+                sun.position.set(18, 28, 10);
                 scene.add(sun);
+                const fill = new THREE.DirectionalLight(0x7d8eae, 0.5);
+                fill.position.set(-14, 10, -8);
+                scene.add(fill);
 
                 groundMesh = new THREE.Mesh(
                     new THREE.PlaneGeometry(180, 180),
-                    new THREE.MeshLambertMaterial({ color: '#a39e93' })
+                    new THREE.MeshLambertMaterial({ color: '#101218' })
                 );
                 groundMesh.rotation.x = -Math.PI / 2;
                 groundMesh.position.y = 0;
                 scene.add(groundMesh);
 
                 const shadowTex = makeShadowTexture();
+                const glow = new THREE.Mesh(
+                    new THREE.PlaneGeometry(1, 1),
+                    new THREE.MeshBasicMaterial({
+                        map: makeGlowTexture(),
+                        transparent: true,
+                        depthWrite: false,
+                        blending: THREE.AdditiveBlending
+                    })
+                );
+                glow.rotation.x = -Math.PI / 2;
+                glow.position.y = 0.02;
+                glow.scale.set(18, 18, 1);
+                glow.renderOrder = 1;
+                scene.add(glow);
+
                 contactShadow = new THREE.Mesh(
                     new THREE.PlaneGeometry(1, 1),
                     new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false })
                 );
                 contactShadow.rotation.x = -Math.PI / 2;
-                contactShadow.position.y = 0.035;
-                contactShadow.scale.set(10.5, 10.5, 1);
+                contactShadow.position.y = 0.04;
+                contactShadow.scale.set(8.5, 8.5, 1);
                 contactShadow.renderOrder = 2;
                 scene.add(contactShadow);
 
                 aimShadow = new THREE.Mesh(
                     new THREE.PlaneGeometry(1, 1),
-                    new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0.12 })
+                    new THREE.MeshBasicMaterial({ map: makeAimTexture(), transparent: true, depthWrite: false, opacity: 0.35 })
                 );
                 aimShadow.rotation.x = -Math.PI / 2;
                 aimShadow.renderOrder = 3;
